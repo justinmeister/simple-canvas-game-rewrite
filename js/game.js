@@ -8,7 +8,7 @@ function Background() {
         this.ready = true;
     };
     this.image.src = "images/flapBG.png";
-}
+};
 
 
 
