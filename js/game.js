@@ -2,22 +2,24 @@
 
 
 function Background() {
+    var that = this;
     this.ready = false;
     this.image = new Image()
     this.image.onload = function () {
-        this.ready = true;
+        that.ready = true;
     };
-    this.image.src = "images/flapBG.png";
+    this.image.src = "images/background.png";
 };
 
 
 
 
 function Hero(canvas) {
+    var that = this;
     this.ready = false;
     this.image = new Image();
     this.image.onload = function () {
-        this.ready = true;
+        that.ready = true;
     };
     this.image.src = "images/hero.png";
     this.speed = 256;
@@ -29,10 +31,11 @@ function Hero(canvas) {
 
 
 function Monster(canvas) {
+    var that = this;
     this.ready = false;
     this.image = new Image();
     this.image.onload = function () {
-        this.ready = true;
+        that.ready = true;
     }
     this.image.src = "images/monster.png";
     this.x = 32 + (Math.random() * (canvas.width - 64));
@@ -44,6 +47,7 @@ function Monster(canvas) {
 
 
 function Game() {
+    var that = this
     this.canvas = document.createElement("canvas");
     this.ctx = this.canvas.getContext("2d");
     this.canvas.width = 512;
@@ -54,6 +58,8 @@ function Game() {
     this.monster = new Monster(this.canvas);
     this.monstersCaught = 0;
 
+    this.background = new Background()
+
     this.keysDown = {};
     this.now = Date.now();
     this.then = Date.now();
@@ -63,11 +69,11 @@ function Game() {
 
     this.addListeners = function() {
         addEventListener("keydown", function(e) {
-            this.keysDown[e.keyCode] = true;
+            that.keysDown[e.keyCode] = true;
         }, false);
 
         addEventListener("keyup", function(e) {
-            delete this.keysDown[e.keyCode];
+            delete that.keysDown[e.keyCode];
         }, false);
     }();
 
@@ -75,17 +81,17 @@ function Game() {
 
 
     this.checkInput = function(modifier) {
-        if (38 in this.keysDown) {
-            this.hero.y -= this.hero.speed * modifier;
+        if (38 in that.keysDown) {
+            that.hero.y -= that.hero.speed * modifier;
         }
-        if (40 in this.keysDown) {
-            this.hero.y += this.hero.speed * modifier;
+        if (40 in that.keysDown) {
+            that.hero.y += that.hero.speed * modifier;
         }
-        if (37 in keysDown) {
-            this.hero.x -= this.hero.speed * modifier;
+        if (37 in that.keysDown) {
+            that.hero.x -= that.hero.speed * modifier;
         }
-        if (39 in keysDown) {
-            this.hero.x += this.hero.speed * modifier;
+        if (39 in that.keysDown) {
+            that.hero.x += that.hero.speed * modifier;
         }
     };
 
@@ -93,52 +99,52 @@ function Game() {
 
     this.checkCollisions = function() {
         if (
-            this.hero.x <= (this.monster.x + 32)
-            && this.monster.x <= (this.hero.x + 32)
-            && this.hero.y <= (this.monster.y + 32)
-            && this.monster.y <= (this.hero.y + 32)
+            that.hero.x <= (that.monster.x + 32)
+            && that.monster.x <= (that.hero.x + 32)
+            && that.hero.y <= (that.monster.y + 32)
+            && that.monster.y <= (that.hero.y + 32)
     ) {
-        monstersCaught++;
-        this.monster = new Monster(this.canvas)
+        that.monstersCaught++;
+        that.monster = new Monster(that.canvas)
     }
     };
 
 
 
     this.update = function(modifier) {
-        this.checkInput(modifier);
-        this.checkCollision();
+        that.checkInput(modifier);
+        that.checkCollisions();
     };
 
 
 
     this.render = function() {
-        if (this.background.ready) {
-            this.ctx.drawImage(this.background.image, 0, 0);
+        if (that.background.ready) {
+            that.ctx.drawImage(that.background.image, 0, 0);
         }
 
-        if (this.hero.ready) {
-            this.ctx.drawImage(this.hero.image, this.hero.x, this.hero.y);
+        if (that.hero.ready) {
+            that.ctx.drawImage(that.hero.image, that.hero.x, that.hero.y);
         }
 
-        if (this.monster.ready) {
-            this.ctx.drawImage(this.monster.image, this.monster.x, this.monster.y);
+        if (that.monster.ready) {
+            that.ctx.drawImage(that.monster.image, that.monster.x, that.monster.y);
         }
 
-        this.ctx.fillStyle = "rgb(250, 250, 250)";
-        this.ctx.font = "24px Helvetica";
-        this.ctx.textAlign = "left";
-        this.ctx.textBaseline = "top";
-        this.ctx.fillText("Goblins caught: " + this.monstersCaught, 32, 32);
+        that.ctx.fillStyle = "rgb(250, 250, 250)";
+        that.ctx.font = "24px Helvetica";
+        that.ctx.textAlign = "left";
+        that.ctx.textBaseline = "top";
+        that.ctx.fillText("Goblins caught: " + that.monstersCaught, 32, 32);
     };
 
 
     this.main = function() {
-        this.now = Date.now();
-        this.delta = this.now - this.then;
-        this.update(this.delta/1000);
-        this.render();
-        this.then = this.now;
+        that.now = Date.now();
+        that.delta = that.now - that.then;
+        that.update(that.delta/1000);
+        that.render();
+        that.then = that.now;
     }
 
 };
@@ -147,7 +153,6 @@ function Game() {
 
 
 var control = new Game();
-
 
 // Let's play this game!
 setInterval(control.main, 1); // Execute as fast as possible
